@@ -99,3 +99,8 @@
   width:100px;
   margin-right: 1%;
 }
+
+.btn-primary{
+  background-color: rgb(79, 179, 245)!important;
+  border-color: rgb(79, 179, 245) !important;
+}
