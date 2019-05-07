@@ -61,7 +61,7 @@
   border: 1px dashed gray;
 }
 .list .list-group-item {
-  padding-left: 6%;
+  padding-left: 30px;
   background-color: black;
   color:#fff;
 }
@@ -76,7 +76,7 @@
   font-size: 18px;
   content: "\f0c9";
   position: absolute;
-  left: 20px;
+  left: 5px;
   top: 15px;
 }
 
@@ -88,7 +88,7 @@
   font-family: "Font Awesome 5 Free";
   content: "\f023";
   position: absolute;
-  left: 15px;
+  left: 5px;
   top: 13px;
 }
 
