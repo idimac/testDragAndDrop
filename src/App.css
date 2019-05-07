@@ -60,8 +60,23 @@
   border: 1px dashed gray;
 }
 .list .list-group-item {
+  padding-left: 6%;
   background-color: black;
   color:#fff;
+}
+
+.list-group-item:hover {
+  background-color: rgb(63, 61, 61);
+}
+
+.list-group-item:hover::before {
+  font-weight: 900;
+  font-family: "Font Awesome 5 Free";
+  font-size: 18px;
+  content: "\f0c9";
+  position: absolute;
+  left: 20px;
+  top: 15px;
 }
 
 .list .list-group-item.fixed  {
@@ -72,8 +87,8 @@
   font-family: "Font Awesome 5 Free";
   content: "\f023";
   position: absolute;
-  left: -10px;
-  top: 12px;
+  left: 15px;
+  top: 13px;
 }
 
 .buttonsSegment {
