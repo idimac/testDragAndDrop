@@ -3,9 +3,9 @@ import { ListGroup, Button } from 'react-bootstrap';
 
 class DraggableList extends React.Component {
     state = {
-        available: this.props.availableColumns,
-        visible: this.props.visibleColumns,
-        number: this.props.numberFixed,
+        available: [],
+        visible: [],
+        number: 0,
         startDragPosition: null,
         startDragItemName: null,
         startDragItemIndex: null,
@@ -13,17 +13,16 @@ class DraggableList extends React.Component {
         fixedVisibles: [],
     }
 
-    componentWillMount () {
-        if(this.state.number > 0) {
-            const count = this.state.number;
-            const newFixedVisibles = [];
-            for(var i = count - 1; i >= 0; i--) {
-                newFixedVisibles.push(this.state.visible[i])
-            }
-            this.setState({
-                fixedVisibles: newFixedVisibles
-            })
-        }
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (prevState.available !== nextProps.availableColumns) {
+          return {
+            available: nextProps.availableColumns,
+            visible: nextProps.visibleColumns,
+            number: nextProps.numberFixed,
+            fixedVisibles: nextProps.visibleColumns.slice(0, nextProps.numberFixed)
+          };
+        };
+        return null;
     }
 
     setVisible = (id) => {
