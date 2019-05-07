@@ -1,4 +1,5 @@
 export const availableColumns = [
+    {id: 'symbolAndDescription', name:'Symbol & Description'},
     {id: 'startTime', name: 'StartTime'}, 
     {id: 'stopTime', name: 'StopTime'}, 
     {id: 'perPoint', name: 'PerPoint'},
@@ -13,5 +14,5 @@ export const availableColumns = [
     {id: 'askSize', name: 'Ask Size'},
     {id: 'totalVolume', name: 'Total Volume'},
   ];
-export const visibleColumns = ['startTime', 'stopTime', 'changePercent', 'change', 'last', 'lastVolume', 'bid', 'bidSize', 'ask', 'askSize', 'totalVolume'];
-export const numberFixed = 3;
+export const visibleColumns = ['symbolAndDescription','changePercent', 'change', 'last', 'lastVolume', 'bid', 'bidSize', 'ask', 'askSize', 'totalVolume'];
+export const numberFixed = 1;
