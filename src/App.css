@@ -39,8 +39,8 @@
   width: 2px;
   background: repeating-linear-gradient(
     to bottom,
-    #777,
-    #777 10px,
+    #444,
+    #444 10px,
     #000 10px,
     #000 20px
   );
