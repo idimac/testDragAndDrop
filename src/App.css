@@ -15,11 +15,12 @@
   align-items: top;
   padding: 3%;
   justify-content: left;
-  color: white;
+  color: #fff;;
 }
 .Subheader {
   margin:0;
   font-size: 18pt;
+  color: gray;
 }
 .DraggableList {
   position: relative;
