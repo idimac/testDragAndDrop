@@ -173,7 +173,7 @@ class DraggableList extends React.Component {
                         <h5>Visible</h5>
                         <ListGroup className="list visibleList" data-listtype='visible' onDragEnter={this.dragEnter}>
                             {this.state.visible.map((id, index) => this.renderVisible(id, index))}
-                        </ListGroup>;
+                        </ListGroup>
                     </div>
                 </div>
                 <div className="buttonsSegment">
