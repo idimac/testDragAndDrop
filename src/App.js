@@ -2,17 +2,11 @@ import React from 'react';
 import DraggableList from './DraggableList';
 import './App.css';
 
+import { availableColumns, visibleColumns, numberFixed } from './utils/columns';
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const availableColumns = [
-  {id: 'startTime', name: 'StartTime'}, 
-  {id: 'stopTime', name: 'StopTime'}, 
-  {id: 'perPoint', name: 'PerPoint'},
-  {id: 'initialMargin', name: 'InitialMargin'},
-  {id: 'changePercent', name: 'Change%'}
-];
-const visibleColumns = ['startTime', 'stopTime', 'changePercent'];
-const numberFixed = 3;
+
 function App() {
   return (
     <div className="App">

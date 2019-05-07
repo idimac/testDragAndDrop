@@ -1,5 +1,6 @@
 .App {
   background-color: black; 
+  height: 100%;
 }
 
 .App-logo {
@@ -60,5 +61,25 @@
 }
 .list .list-group-item {
   background-color: black;
-  color:#ddd;
+  color:#fff;
+}
+
+.list .list-group-item.fixed  {
+  color:#777;
+}
+.list .list-group-item.fixed::before  {
+  font-weight: 900;
+  font-family: "Font Awesome 5 Free";
+  content: "\f023";
+  position: absolute;
+  left: -10px;
+  top: 12px;
+}
+
+.buttonsSegment {
+  margin: 5%;
+}
+.btn {
+  width:100px;
+  margin-right: 1%;
 }
