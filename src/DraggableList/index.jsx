@@ -26,10 +26,11 @@ class DraggableList extends React.Component {
     }
 
     setVisible = (id) => {
-        if(this.state.visible.includes(id)) {
+        const { visible } = this.state;
+        if(visible.includes(id)) {
             return 
         }
-        const updatedVisible = this.state.visible;
+        const updatedVisible = [...visible];
         updatedVisible.push(id);
         this.setState({
             visible: updatedVisible
@@ -37,7 +38,7 @@ class DraggableList extends React.Component {
     }
 
     setAvailable = (id) => {
-        const visible = this.state.visible;
+        const { visible } = this.state;
         const updatedVisible = visible.filter(visibleName => visibleName !== id);
         this.setState({
             visible: updatedVisible
@@ -45,15 +46,17 @@ class DraggableList extends React.Component {
     }
      
     dragTargetChange = (event) => {
-        const type = event.target.parentNode.dataset.listtype || event.target.dataset.listtype;
-        if(type === 'available' && this.state.startDragPosition === 'available') {
-            let dropTarget = this.state.available.findIndex((item => item.id === event.target.dataset.id));
+        const { target } = event;
+        const { startDragPosition, available, visible } = this.state;
+        const type = target.parentNode.dataset.listtype || target.dataset.listtype;
+        if(type === 'available' && startDragPosition === 'available') {
+            let dropTarget = available.findIndex((item => item.id === target.dataset.id));
             this.setState({
                 dragTarget: dropTarget
             }); 
         }
-        if(type === 'visible' && this.state.startDragPosition === 'visible') {
-            let dropTarget = this.state.visible.findIndex((item => item === event.target.dataset.id));
+        if(type === 'visible' && startDragPosition === 'visible') {
+            let dropTarget = visible.findIndex((item => item === target.dataset.id));
             this.setState({
                 dragTarget: dropTarget
             }); 
@@ -61,69 +64,72 @@ class DraggableList extends React.Component {
     }
 
     changeAvailablePosition = () => {
-            let startDragIndex = this.state.startDragItemIndex;
-            let dropTarget = this.state.dragTarget;
-            let arr = this.state.available;
-            arr.splice(dropTarget, 0, arr.splice(startDragIndex, 1)[0]); 
+            const { startDragItemIndex, dragTarget, available } = this.state;
+            let arr = available;
+            arr.splice(dragTarget, 0, arr.splice(startDragItemIndex, 1)[0]); 
             this.setState({
                 available: arr
             }); 
     }
 
     changeVisiblePosition = () => {
-        let startDragIndex = this.state.startDragItemIndex;
-        let dropTarget = this.state.dragTarget;
-        let arr = this.state.visible;
-        arr.splice(dropTarget, 0, arr.splice(startDragIndex, 1)[0]); 
+        const { startDragItemIndex, dragTarget, visible } = this.state;
+        let arr = visible;
+        arr.splice(dragTarget, 0, arr.splice(startDragItemIndex, 1)[0]); 
         this.setState({
             visible: arr
         }); 
 }
 
     dragStart = (item, index) => {
+        const { parentNode } = item.target;
         this.setState ({
-            startDragPosition: item.target.parentNode.parentNode.dataset.listtype,
-            startDragItemName: item.target.parentNode.dataset.id,
+            startDragPosition: parentNode.parentNode.dataset.listtype,
+            startDragItemName: parentNode.dataset.id,
             startDragItemIndex: index,
         })
     }
 
     dragEnter = (event) => {
-        const type = event.target.parentNode.dataset.listtype || event.target.dataset.listtype;
-        if(type === 'available' && this.state.startDragPosition === 'visible') {
-            this.setAvailable(this.state.startDragItemName)
+        const { startDragPosition, startDragItemName } = this.state;
+        const { target } = event;
+        const type = target.parentNode.dataset.listtype || target.dataset.listtype;
+        if(type === 'available' && startDragPosition === 'visible') {
+            this.setAvailable(startDragItemName)
         }
-        if (type === 'visible' && this.state.startDragPosition === 'available') {
-            this.setVisible(this.state.startDragItemName)
+        if (type === 'visible' && startDragPosition === 'available') {
+            this.setVisible(startDragItemName)
         }
     }
 
     toggleFixed = (index) => {
-        const target = this.state.visible[index];
-        let currentFixedVisibles = this.state.fixedVisibles;
-        const targetFixedInState = currentFixedVisibles.indexOf(target);
+        const { visible, fixedVisibles } = this.state;
+        const fixedVisiblesToUpdate = [...fixedVisibles]; 
+        const target = visible[index];
+        const targetFixedInState = fixedVisiblesToUpdate.indexOf(target);
         if( targetFixedInState !== -1) {
             for(let i = index; i < this.state.visible.length; i++) {
-                let deletedFromFixed = currentFixedVisibles.indexOf(this.state.visible[i]);
+                let deletedFromFixed = fixedVisiblesToUpdate.indexOf(this.state.visible[i]);
                 if(deletedFromFixed !== -1) {
-                    currentFixedVisibles.splice(deletedFromFixed,1);
+                    fixedVisiblesToUpdate.splice(deletedFromFixed,1);
                 }
             }
         } else {
             for(let i=index; i >= 0; i--){
-                if(currentFixedVisibles.indexOf(this.state.visible[i]) === -1) {
-                    currentFixedVisibles.push(this.state.visible[i])
+                if(fixedVisiblesToUpdate.indexOf(this.state.visible[i]) === -1) {
+                    fixedVisiblesToUpdate.push(this.state.visible[i])
                 } 
             }
         }
         this.setState({
-            fixedVisibles: currentFixedVisibles
+            fixedVisibles: fixedVisiblesToUpdate
         })
     }
 
 
     renderAvailable = (item, index) => {
-        const isVisibleAvailableItem = this.state.visible.find(element => element === item.id);
+        const { visible } = this.state;
+        const isVisibleAvailableItem = visible.find(element => element === item.id);
         if(!isVisibleAvailableItem ) {
             return (
                 <ListGroup.Item key={item.id} 
@@ -138,12 +144,13 @@ class DraggableList extends React.Component {
     }
        
     renderVisible = (id, index) => {
-        const item = this.state.available.find(element => element.id === id);
-        const draggable = (this.state.fixedVisibles.find(itemInFixed =>itemInFixed === item.id));
+        const { available, fixedVisibles } = this.state;
+        const item = available.find(element => element.id === id);
+        const draggable = (fixedVisibles.find(itemInFixed =>itemInFixed === item.id));
         if(item) {
             return (
                 <ListGroup.Item key={item.id} 
-                    className={this.state.fixedVisibles.find(fixed => fixed === item.id) ? 'fixed': null}
+                    className={fixedVisibles.find(fixed => fixed === item.id) ? 'fixed': null}
                     onDragStart={(e)=>this.dragStart(e, index)} 
                     onDragEnter={this.dragTargetChange} 
                     onDragEnd={this.changeVisiblePosition} 
@@ -156,22 +163,24 @@ class DraggableList extends React.Component {
     }
 
     saveButton = () => {
-        alert(`Visible columns: ${this.state.visible} \n\rСount of fixed: ${this.state.fixedVisibles.length}`)
+        const { visible, fixedVisibles } = this.state;
+        alert(`Visible columns: ${visible} \n\rСount of fixed: ${fixedVisibles.length}`)
     }
     render() {
+        const { available, visible } = this.state;
         return (
             <div>
                 <div className="DraggableList">
                     <div className="leftColumn">
                         <h5>Available</h5>
                         <ListGroup className="list availableList" data-listtype='available' onDragEnter={this.dragEnter}>
-                            {this.state.available.map((item, index) => this.renderAvailable(item, index))}
+                            {available.map((item, index) => this.renderAvailable(item, index))}
                         </ListGroup>;
                     </div>
                     <div className="rightColumn">
                         <h5>Visible</h5>
                         <ListGroup className="list visibleList" data-listtype='visible' onDragEnter={this.dragEnter}>
-                            {this.state.visible.map((id, index) => this.renderVisible(id, index))}
+                            {visible.map((id, index) => this.renderVisible(id, index))}
                         </ListGroup>
                     </div>
                 </div>

@@ -11,6 +11,7 @@ class App extends React.Component {
   state = {
     cols: [],
     visCols: [],
+    count: null
   }
 
   componentDidMount () {
