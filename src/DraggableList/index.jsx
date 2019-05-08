@@ -108,7 +108,7 @@ class DraggableList extends React.Component {
         const target = visible[index];
         const targetFixedInState = fixedVisiblesToUpdate.indexOf(target);
         if( targetFixedInState !== -1) {
-            for(let i = index; i < this.state.visible.length; i++) {
+            for(let i = index; i < visible.length; i++) {
                 let deletedFromFixed = fixedVisiblesToUpdate.indexOf(this.state.visible[i]);
                 if(deletedFromFixed !== -1) {
                     fixedVisiblesToUpdate.splice(deletedFromFixed,1);
