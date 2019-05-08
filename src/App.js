@@ -1,6 +1,6 @@
 import React from 'react';
 import DraggableList from './DraggableList';
-import './App.css';
+import './App.scss';
 
 import { availableColumns, visibleColumns, numberFixed } from './utils/columns';
 
