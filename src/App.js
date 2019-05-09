@@ -6,22 +6,21 @@ import { availableColumns, visibleColumns, numberFixed } from './utils/columns';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-
 class App extends React.Component {
   state = {
     cols: [],
     visCols: [],
-    count: null
-  }
+    count: null,
+  };
 
-  componentDidMount () {
-    setTimeout( ()=>{
+  componentDidMount() {
+    setTimeout(() => {
       this.setState({
         cols: availableColumns,
         visCols: visibleColumns,
         count: numberFixed,
-      })
-    },1000)
+      });
+    }, 1000);
   }
 
   render() {
@@ -30,12 +29,17 @@ class App extends React.Component {
       <div className="App">
         <header className="App-header">
           <h1>Configure Data Fields</h1>
-          <p className="Subheader">Drag & drop beetwen columns to configure visible data</p>
+          <p className="Subheader">
+            Drag & drop beetwen columns to configure visible data
+          </p>
         </header>
         <div className="mainPage">
-          <DraggableList availableColumns={cols} visibleColumns={visCols} numberFixed={count} /> 
+          <DraggableList
+            availableColumns={cols}
+            visibleColumns={visCols}
+            numberFixed={count}
+          />
         </div>
-        
       </div>
     );
   }
