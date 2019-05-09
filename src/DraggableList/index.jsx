@@ -10,10 +10,11 @@ class DraggableList extends React.Component {
     startDragItemIndex: null,
     dragTarget: null,
     fixedVisibles: [],
+    fixedVisible: null,
   };
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    if (prevState.available !== nextProps.availableColumns) {
+    if (prevState.available.length !== nextProps.availableColumns.length) {
       return {
         available: nextProps.availableColumns,
         visible: nextProps.visibleColumns,
@@ -42,20 +43,18 @@ class DraggableList extends React.Component {
     });
   };
 
-  dragTargetChange = event => {
-    const { target } = event;
+  dragTargetChange = ({ target }) => {
     const { startDragPosition, available, visible } = this.state;
+    let dropTarget;
     const type = target.parentNode.dataset.listtype || target.dataset.listtype;
     if (type === 'available' && startDragPosition === 'available') {
-      const dropTarget = available.findIndex(
-        item => item.id === target.dataset.id,
-      );
+      dropTarget = available.findIndex(item => item.id === target.dataset.id);
       this.setState({
         dragTarget: dropTarget,
       });
     }
     if (type === 'visible' && startDragPosition === 'visible') {
-      const dropTarget = visible.findIndex(item => item === target.dataset.id);
+      dropTarget = visible.findIndex(item => item === target.dataset.id);
       this.setState({
         dragTarget: dropTarget,
       });
@@ -64,24 +63,45 @@ class DraggableList extends React.Component {
 
   changeAvailablePosition = () => {
     const { startDragItemIndex, dragTarget, available } = this.state;
-    const arr = available;
-    arr.splice(dragTarget, 0, arr.splice(startDragItemIndex, 1)[0]);
+    const arr = available.map((el, index) => {
+      if (index === dragTarget) {
+        return available[startDragItemIndex];
+      }
+      if (index === startDragItemIndex) {
+        return available[dragTarget];
+      }
+      return el;
+    });
     this.setState({
       available: arr,
     });
   };
 
   changeVisiblePosition = () => {
-    const { startDragItemIndex, dragTarget, visible } = this.state;
-    const arr = visible;
-    arr.splice(dragTarget, 0, arr.splice(startDragItemIndex, 1)[0]);
+    const {
+      startDragItemIndex,
+      dragTarget,
+      visible,
+      fixedVisible,
+    } = this.state;
+    if (dragTarget < fixedVisible - 1) {
+      return null;
+    }
+    const arr = visible.map((el, index) => {
+      if (index === dragTarget) {
+        return visible[startDragItemIndex];
+      }
+      if (index === startDragItemIndex) {
+        return visible[dragTarget];
+      }
+      return el;
+    });
     this.setState({
       visible: arr,
     });
   };
 
   dragStart = index => event => {
-    console.log(event.target, index);
     const { parentNode, dataset } = event.target.parentNode;
     this.setState({
       startDragPosition: parentNode.dataset.listtype,
@@ -102,14 +122,8 @@ class DraggableList extends React.Component {
   };
 
   toggleFixed = index => () => {
-    const { visible, fixedVisibles } = this.state;
-    const target = fixedVisibles.indexOf(visible[index]);
-    const fixedVisiblesToUpdate =
-      target === -1
-        ? visible.slice(0, index + 1)
-        : fixedVisibles.slice(0, target);
     this.setState({
-      fixedVisibles: fixedVisiblesToUpdate,
+      fixedVisible: index + 1,
     });
   };
 
@@ -134,24 +148,20 @@ class DraggableList extends React.Component {
   };
 
   renderVisible = (id, index) => {
-    const { available, fixedVisibles } = this.state;
+    const { available, fixedVisible } = this.state;
     const item = available.find(element => element.id === id);
-    const draggable = fixedVisibles.find(
-      itemInFixed => itemInFixed === item.id,
-    );
+    const isLocked = fixedVisible > index;
     if (item) {
       return (
         <ListGroup.Item
           key={item.id}
-          className={
-            fixedVisibles.find(fixed => fixed === item.id) ? 'fixed' : null
-          }
+          className={isLocked ? 'fixed' : null}
           onDragStart={this.dragStart(index)}
           onDragEnter={this.dragTargetChange}
           onDragEnd={this.changeVisiblePosition}
           onDoubleClick={this.toggleFixed(index)}
           data-id={item.id}>
-          <div className="drag" draggable={!draggable}>
+          <div className="drag" draggable={!isLocked}>
             {item.name}
           </div>
         </ListGroup.Item>
@@ -162,7 +172,6 @@ class DraggableList extends React.Component {
 
   saveButton = () => {
     const { visible, fixedVisibles } = this.state;
-
     alert(
       `Visible columns: ${visible} \n\rСount of fixed: ${fixedVisibles.length}`,
     );
